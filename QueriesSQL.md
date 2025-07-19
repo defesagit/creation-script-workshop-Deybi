@@ -57,6 +57,23 @@ GROUP BY
 **Consulta SQL:**
 ```sql
 
+SELECT 
+    c.num_cuenta,
+    c.id_cliente,
+    cli.nombre,
+    c.tipo_cuenta,
+    c.saldo,
+    c.fecha_apertura,
+    t.fecha_expiracion 
+FROM 
+    Cuenta c
+JOIN 
+    Cliente cli ON c.id_cliente = cli.id_cliente
+LEFT JOIN 
+    Tarjeta t ON c.num_cuenta = t.num_cuenta
+WHERE 
+	t.fecha_expiracion < CURRENT_DATE ;
+
 ```
 
 ## Enunciado 4: Análisis de saldos promedio por tipo de cuenta y comportamiento transaccional
@@ -65,6 +82,8 @@ GROUP BY
 
 **Consulta SQL:**
 ```sql
+
+
 
 ```
 
