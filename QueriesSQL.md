@@ -7,6 +7,22 @@
 **Consulta SQL:**
 ```sql
 
+SELECT 
+    c.id_cliente,
+    c.nombre,
+    COUNT(ct.num_cuenta) AS cantidad_cuentas,
+    SUM(ct.saldo) AS saldo_total
+FROM 
+    Cliente c
+JOIN 
+    Cuenta ct ON c.id_cliente = ct.id_cliente
+GROUP BY 
+    c.id_cliente, c.nombre
+HAVING 
+    COUNT(ct.num_cuenta) > 1
+ORDER BY 
+    saldo_total DESC;
+
 ```
 
 ## Enunciado 2: Comparativa entre depósitos y retiros por cliente
