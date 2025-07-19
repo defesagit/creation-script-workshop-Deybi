@@ -32,6 +32,22 @@ ORDER BY
 **Consulta SQL:**
 ```sql
 
+SELECT 
+    cl.id_cliente,
+    cl.nombre,
+    SUM(CASE WHEN t.tipo_transaccion = 'deposito' THEN t.monto END) AS Total_Depositos,
+    SUM(CASE WHEN t.tipo_transaccion = 'retiro' THEN t.monto END) AS Total_Retiros,
+    SUM(CASE WHEN t.tipo_transaccion = 'deposito' THEN t.monto END) -
+    SUM(CASE WHEN t.tipo_transaccion = 'retiro' THEN t.monto END) AS Balance
+FROM 
+    Cliente cl
+JOIN 
+    Cuenta c ON cl.id_cliente = c.id_cliente
+JOIN 
+    Transaccion t ON c.num_cuenta = t.num_cuenta
+GROUP BY 
+    cl.id_cliente, cl.nombre;
+
 ```
 
 ## Enunciado 3: Cuentas sin tarjetas asociadas
