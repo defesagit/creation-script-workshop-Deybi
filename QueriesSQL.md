@@ -121,4 +121,19 @@ GROUP BY
 **Consulta SQL:**
 ```sql
 
+SELECT DISTINCT cli.id_cliente, cli.nombre, cli.cedula
+FROM Cliente cli
+JOIN Cuenta c ON cli.id_cliente = c.id_cliente
+JOIN Transaccion t ON c.num_cuenta = t.num_cuenta
+JOIN Transferencia tf ON t.id_transaccion = tf.id_transaccion
+WHERE cli.id_cliente NOT IN (
+    SELECT DISTINCT cli2.id_cliente
+    FROM Cliente cli2
+    JOIN Cuenta c2 ON cli2.id_cliente = c2.id_cliente
+    JOIN Transaccion t2 ON c2.num_cuenta = t2.num_cuenta
+    JOIN Retiro r ON t2.id_transaccion = r.id_transaccion
+    WHERE LOWER(r.canal) = 'transferencia' 
+    	and LOWER(r.canal) <> 'cajero'
+);
+
 ```
