@@ -41,6 +41,52 @@ db.clientes.aggregate([
 
 **Consulta MongoDB:**
 ```javascript
+
+db.transacciones.aggregate([
+  {
+    $group: {
+      _id: {
+        cliente: "$cliente_ref",
+        tipo_transaccion: "$tipo_transaccion"
+      },
+      cantidad_transacciones: { $sum: 1 },
+      monto_total: { $sum: "$monto" }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id.cliente",
+      transacciones_por_tipo: {
+        $push: {
+          tipo_transaccion: "$_id.tipo_transaccion",
+          cantidad: "$cantidad_transacciones",
+          monto_total: "$monto_total"
+        }
+      }
+    }
+  },
+  {
+    $lookup: {
+      from: "clientes",
+      localField: "_id",
+      foreignField: "_id",
+      as: "cliente"
+    }
+  },
+  {
+    $unwind: "$cliente"
+  },
+  {
+    $project: {
+      _id: 0,
+      cliente_id: "$cliente._id",
+      nombre: "$cliente.nombre",
+      transacciones_por_tipo: 1
+    }
+  }
+])
+
+
 ```
 
 ## 3. Clientes con Múltiples Tarjetas de Crédito
