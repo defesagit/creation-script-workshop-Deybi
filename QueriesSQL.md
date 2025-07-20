@@ -83,7 +83,34 @@ WHERE
 **Consulta SQL:**
 ```sql
 
+SELECT 
+    c.num_cuenta,
+    c.id_cliente,
+    cli.nombre,
+    c.tipo_cuenta,
+    c.saldo,
+    c.fecha_apertura,
+    t.fecha_expiracion 
+FROM 
+    Cuenta c
+JOIN 
+    Cliente cli ON c.id_cliente = cli.id_cliente
+LEFT JOIN 
+    Tarjeta t ON c.num_cuenta = t.num_cuenta
+WHERE 
+	t.fecha_expiracion < CURRENT_DATE ;
 
+SELECT 
+    c.tipo_cuenta,
+    ROUND(AVG(c.saldo), 2) AS saldo_promedio
+FROM 
+    Cuenta c
+JOIN 
+    Transaccion t ON c.num_cuenta = t.num_cuenta
+WHERE 
+    t.fecha <= CURRENT_DATE - 30
+GROUP BY 
+    c.tipo_cuenta;
 
 ```
 
