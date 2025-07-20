@@ -95,6 +95,53 @@ db.transacciones.aggregate([
 
 **Consulta MongoDB:**
 ```javascript
+
+db.clientes.aggregate([
+  // Descomponer las cuentas
+  { $unwind: "$cuentas" },
+  // Descomponer las tarjetas de cada cuenta
+  { $unwind: "$cuentas.tarjetas" },
+  // Filtrar solo las tarjetas de tipo "credito"
+  {
+    $match: {
+      "cuentas.tarjetas.tipo_tarjeta": "credito"
+    }
+  },
+  // Agrupar por cliente
+  {
+    $group: {
+      _id: "$_id",
+      nombre: { $first: "$nombre" },
+      cedula: { $first: "$cedula" },
+      correo: { $first: "$correo" },
+      direccion: { $first: "$direccion" },
+      tarjetas_credito: {
+        $push: "$cuentas.tarjetas"
+      },
+      cantidad_tarjetas_credito: { $sum: 1 }
+    }
+  },
+  // Filtrar solo aquellos con más de una tarjeta de crédito
+  {
+    $match: {
+      cantidad_tarjetas_credito: { $gt: 1 }
+    }
+  },
+  // Proyectar el resultado limpio
+  {
+    $project: {
+      _id: 0,
+      nombre: 1,
+      cedula: 1,
+      correo: 1,
+      direccion: 1,
+      cantidad_tarjetas_credito: 1,
+      tarjetas_credito: 1
+    }
+  }
+])
+
+
 ```
 
 ## 4. Análisis de Medios de Pago más Utilizados
