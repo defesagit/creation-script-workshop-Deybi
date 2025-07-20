@@ -82,7 +82,6 @@ WHERE
 
 **Consulta SQL:**
 ```sql
-
 SELECT 
     c.num_cuenta,
     c.id_cliente,
@@ -90,7 +89,8 @@ SELECT
     c.tipo_cuenta,
     c.saldo,
     c.fecha_apertura,
-    t.fecha_expiracion 
+    t.fecha_expiracion,
+    CURRENT_DATE -30 as fecha
 FROM 
     Cuenta c
 JOIN 
@@ -108,7 +108,7 @@ FROM
 JOIN 
     Transaccion t ON c.num_cuenta = t.num_cuenta
 WHERE 
-    t.fecha <= CURRENT_DATE - 30
+    t.fecha >= CURRENT_DATE - 30
 GROUP BY 
     c.tipo_cuenta;
 
