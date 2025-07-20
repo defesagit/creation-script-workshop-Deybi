@@ -172,4 +172,69 @@ db.clientes.aggregate([
 
 **Consulta MongoDB:**
 ```javascript
+
+db.transacciones.aggregate([
+  {
+    $match: {
+      tipo_transaccion: "retiro"
+    }
+  },
+  {
+    $addFields: {
+      fecha_convertida: {
+        $cond: {
+          if: { $eq: [{ $type: "$fecha" }, "date"] },
+          then: "$fecha",
+          else: { $toDate: "$fecha" }
+        }
+      }
+    }
+  },
+  {
+    $addFields: {
+      fecha_dia: {
+        $dateToString: {
+          format: "%Y-%m-%d",
+          date: "$fecha_convertida"
+        }
+      }
+    }
+  },
+  {
+    $group: {
+      _id: {
+        num_cuenta: "$num_cuenta",
+        fecha: "$fecha_dia"
+      },
+      cantidad_retiros: { $sum: 1 },
+      monto_total: { $sum: "$monto" },
+      transacciones: { $push: "$$ROOT" }
+    }
+  },
+  {
+    $match: {
+      cantidad_retiros: { $gt: 3 },
+      monto_total: { $gt: 1000000 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      num_cuenta: "$_id.num_cuenta",
+      fecha: "$_id.fecha",
+      cantidad_retiros: 1,
+      monto_total: 1,
+      transacciones: {
+        _id: 1,
+        fecha: 1,
+        monto: 1,
+        descripcion: 1,
+        "detalles_retiro.canal": 1,
+        cliente_ref: 1
+      }
+    }
+  }
+])
+
+
 ```
