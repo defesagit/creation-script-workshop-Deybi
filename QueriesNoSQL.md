@@ -150,6 +150,20 @@ db.clientes.aggregate([
 
 **Consulta MongoDB:**
 ```javascript
+
+{
+  "_id": "ObjectId('607f1f77bcf86cd799439022')",
+  "num_cuenta": 1000000001,
+  "fecha": "2023-05-10T14:30:45.000Z",
+  "monto": 200000.00,
+  "tipo_transaccion": "deposito",
+  "descripcion": "Depósito de nómina",
+  "detalles_deposito": {
+    "medio_pago": "transferencia"
+  },
+  "cliente_ref": "ObjectId('507f1f77bcf86cd799439011')"
+}
+
 ```
 
 ## 5. Detección de Cuentas con Transacciones Sospechosas
